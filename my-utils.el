@@ -1,0 +1,10 @@
+(message "loading my package ...")
+(defun my-export-puml ()
+  "Exports the current puml file to and svg file in the same directory"
+  (interactive)
+  (when-let (file buffer-file-name)
+      (when (or (string-suffix-p ".pum" file) (string-suffix-p ".puml" file))
+        (let ((cmd-args (append (list plantuml-java-command nil nil nil)
+                                (plantuml-jar-render-command "-tsvg" file))))
+          (apply 'call-process cmd-args))
+        (message "puml exported"))))
