@@ -13,3 +13,12 @@
   (add-hook 'after-save-hook 'my-export-puml nil t))
 
 (add-hook 'plantuml-mode-hook 'on-puml-save-hook)
+
+(defun my-kill-async-shell-buffers ()
+  "Kills all the async shell buffers with terminated processes"
+  (interactive)
+  (seq-doseq (b  (seq-filter (lambda (b)
+                               (string-prefix-p shell-command-buffer-name-async (buffer-name b)))
+                             (buffer-list)))
+    (when (not (get-buffer-process b))
+      (kill-buffer b))))
