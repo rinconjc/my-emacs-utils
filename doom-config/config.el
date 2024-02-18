@@ -92,3 +92,5 @@
 (after! cider
   (setq cider-enrich-classpath t)
   (setq +clojure-load-clj-refactor-with-lsp t))
+
+(load! (concat default-directory "../my-utils.el"))
