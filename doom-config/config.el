@@ -21,10 +21,9 @@
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept. For example:
 ;;
-(setq doom-font (font-spec :family "Fira Code" :size 14 :weight 'medium)
-      doom-variable-pitch-font (font-spec :family "Iosevka" :size 15)
-      )
-;; doom-symbol-font (font-spec :family "Fira Code");
+(setq doom-font (font-spec :family "Fira Code" :size 14 :weight 'normal)
+      doom-variable-pitch-font (font-spec :family "Fira Code" :size 15))
+;;
 ;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
 ;; refresh your font settings. If Emacs still can't find your font, it likely
@@ -92,5 +91,8 @@
 (after! cider
   (setq cider-enrich-classpath t)
   (setq +clojure-load-clj-refactor-with-lsp t))
+
+(after! plantuml-mode
+  (setq plantuml-default-exec-mode `jar))
 
 (load! (concat default-directory "../my-utils.el"))
