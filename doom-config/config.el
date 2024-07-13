@@ -44,6 +44,8 @@
 (setq org-directory "~/org/")
 
 
+(tool-bar-mode t)
+(tool-bar-mode 0)
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;
@@ -92,6 +94,8 @@
 (after! plantuml-mode
   (setq plantuml-default-exec-mode `jar))
 
+(after! avy
+  (setq avy-all-windows t))
 ;; A Spacemacs like Lisp state menu (without the transient state)
 
 (map! :leader
@@ -138,3 +142,7 @@
        :desc "Copy sexp" "y" #'sp-copy-sexp))
 
 ;; (load! (concat default-directory "../my-utils.el"))
+
+(use-package! gptel
+  ;; :config (setq! gptel-api-key "AIzaSyCsT5Z3qbNZ1sfe_APIMsLHBzmkEMzIDwg")
+  (gptel-make-gemini "Gemini" :key (password-store-get "gemini-key") :stream t))
