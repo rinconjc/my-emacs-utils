@@ -141,8 +141,13 @@
         :desc "Unwrap" "u" #'sp-unwrap-sexp)
        :desc "Copy sexp" "y" #'sp-copy-sexp))
 
-;; (load! (concat default-directory "../my-utils.el"))
-
 (use-package! gptel
-  ;; :config (setq! gptel-api-key "AIzaSyCsT5Z3qbNZ1sfe_APIMsLHBzmkEMzIDwg")
-  (gptel-make-gemini "Gemini" :key (password-store-get "gemini-key") :stream t))
+  :config
+  (setq! gptel-model "gemini-pro"
+         gptel-backend (gptel-make-gemini "Gemini" :key 'gptel-api-key :stream t)))
+
+(load! "my-commands.el")
+
+(map! :leader
+      :desc "Async shell command"
+      "e a" #'my-commands.eshell-command-async)
