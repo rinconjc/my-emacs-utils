@@ -48,15 +48,15 @@
     (when (not (get-buffer-process b))
       (kill-buffer b))))
 
-(defun my-commands.eshell-command-async (command)
-  "Run a shell COMMAND asynchronously using `start-process`."
-  (interactive (list (read-shell-command "Async Eshell command: ")))
-  (let ((buffer (generate-new-buffer (concat "*Async Eshell: " command "*"))))
-    (start-process-shell-command command buffer command)
-    ;; (display-buffer buffer '((display-buffer-pop-up-window)))
-    (with-current-buffer buffer
-      (goto-char (point-min)))
-    (display-buffer buffer)))
+;; (defun my-commands.eshell-command-async (command)
+;;   "Run a shell COMMAND asynchronously using `start-process`."
+;;   (interactive (list (read-shell-command "Async Eshell command: ")))
+;;   (let ((buffer (generate-new-buffer (concat "*Async Eshell: " command "*"))))
+;;     (eshell-command command buffer command)
+;;     ;; (display-buffer buffer '((display-buffer-pop-up-window)))
+;;     (with-current-buffer buffer
+;;       (goto-char (point-min)))
+;;     (display-buffer buffer)))
 
 
 ;;; my-commands.el ends here

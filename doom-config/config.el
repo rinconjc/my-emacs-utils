@@ -44,8 +44,8 @@
 (setq org-directory "~/org/")
 
 
-(tool-bar-mode t)
-(tool-bar-mode 0)
+;; (tool-bar-mode t)
+;; (tool-bar-mode 0)
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;
@@ -96,6 +96,11 @@
 
 (after! avy
   (setq avy-all-windows t))
+
+(after! lsp-java
+  (setq lsp-java-jdt-download-url "https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/1.42.0/jdt-language-server-1.42.0-202411281516.tar.gz"))
+;;
+;;
 ;; A Spacemacs like Lisp state menu (without the transient state)
 
 (map! :leader
@@ -141,13 +146,27 @@
         :desc "Unwrap" "u" #'sp-unwrap-sexp)
        :desc "Copy sexp" "y" #'sp-copy-sexp))
 
-(use-package! gptel
-  :config
-  (setq! gptel-model "gemini-pro"
-         gptel-backend (gptel-make-gemini "Gemini" :key 'gptel-api-key :stream t)))
+;; (use-package! gptel
+;;   :config
+;;   (setq! gptel-model "gemini-pro"
+;;          gptel-backend (gptel-make-gemini "Gemini" :key 'gptel-api-key :stream t)))
 
 (load! "my-commands.el")
 
 (map! :leader
       :desc "Async shell command"
-      "e a" #'my-commands.eshell-command-async)
+      "e a" #'eshell-command)
+
+;; (defalias 'amr "atlas micros resource $*")
+
+;; (after! lsp-mode
+;;   (add-to-list 'lsp-language-id-configuration '(helm-template-mode)))
+
+;; accept completion from copilot and fallback to company
+;; (use-package! copilot
+;;   :hook (prog-mode . copilot-mode)
+;;   :bind (:map copilot-completion-map
+;;               ("<tab>" . 'copilot-accept-completion)
+;;               ("TAB" . 'copilot-accept-completion)
+;;               ("C-TAB" . 'copilot-accept-completion-by-word)
+;;               ("C-<tab>" . 'copilot-accept-completion-by-word)))

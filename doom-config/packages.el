@@ -50,3 +50,9 @@
 ;; (unpin! t)
 
 (package! gptel)
+
+(package! kubernetes)
+(package! kubernetes-evil)
+(package! kubernetes-helm)
+;; (package! copilot
+;;   :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el")))
