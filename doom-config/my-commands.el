@@ -58,5 +58,8 @@
       (goto-char (point-min)))
     (display-buffer buffer)))
 
+(defun my-commands.open-typescript-repl ()
+  (interactive)
+  (ansi-term "ts-node"))
 
 ;;; my-commands.el ends here

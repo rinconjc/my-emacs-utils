@@ -44,8 +44,8 @@
 (setq org-directory "~/org/")
 
 
-(tool-bar-mode t)
-(tool-bar-mode 0)
+;; (tool-bar-mode t)
+;; (tool-bar-mode 0)
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;
@@ -149,8 +149,11 @@
 
 (use-package! gptel
   :config
-  (setq! gptel-model `gemini-2.0-flash-exp
+  (setq! gptel-model `gemini-2.5-flash
          gptel-backend (gptel-make-gemini "Gemini" :key 'gptel-api-key :stream t)))
+
+(require 'hyperbole
+         (hyperbole-mode ))
 
 (load! "my-commands.el")
 
@@ -192,3 +195,18 @@ Looks for .venv directory in project root and activates the Python interpreter."
 
           (message "Activated UV Python environment at %s" venv-path))
       (error "No UV Python environment found in %s" project-root))))
+
+;; hyperbole functions
+;;
+(require 'hyperbole)
+(defib makefile-target ()
+  "Execute make target when point is on a Makefile target definition."
+  (when (and (derived-mode-p 'makefile-mode 'makefile-gmake-mode)
+             (save-excursion
+               (beginning-of-line)
+               (looking-at "^\\([a-zA-Z0-9_.-]+\\):")))
+    (let ((target (match-string 1)))
+      (ibut:label-set target (match-beginning 1) (match-end 1))
+      (hact 'compile (format "make -f %s %s" 
+                             (buffer-file-name)
+                             target)))))

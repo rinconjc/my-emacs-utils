@@ -50,3 +50,5 @@
 ;; (unpin! t)
 
 (package! gptel)
+
+(package! hyperbole)
