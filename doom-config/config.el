@@ -146,10 +146,10 @@
         :desc "Unwrap" "u" #'sp-unwrap-sexp)
        :desc "Copy sexp" "y" #'sp-copy-sexp))
 
-;; (use-package! gptel
-;;   :config
-;;   (setq! gptel-model "gemini-pro"
-;;          gptel-backend (gptel-make-gemini "Gemini" :key 'gptel-api-key :stream t)))
+(use-package! gptel
+  :config
+  (setq! gptel-model 'gpt-4o
+         gptel-backend (gptel-make-gh-copilot "Copilot")))
 
 (load! "my-commands.el")
 
@@ -157,7 +157,7 @@
       :desc "Async shell command"
       "e a" #'eshell-command)
 
-;; (defalias 'amr "atlas micros resource $*")
+;; (eshell/alias amr "atlas micros resource $*")
 
 ;; (after! lsp-mode
 ;;   (add-to-list 'lsp-language-id-configuration '(helm-template-mode)))
@@ -170,3 +170,48 @@
 ;;               ("TAB" . 'copilot-accept-completion)
 ;;               ("C-TAB" . 'copilot-accept-completion-by-word)
 ;;               ("C-<tab>" . 'copilot-accept-completion-by-word)))
+
+;; https://mclare.blog/posts/using-uv-in-emacs/
+(defun uv-activate ()
+  "Activate Python environment managed by uv based on current project directory.
+Looks for .venv directory in project root and activates the Python interpreter."
+  (interactive)
+  (let* ((project-root (project-root (project-current t)))
+         (venv-path (expand-file-name ".venv" project-root))
+         (python-path (expand-file-name
+                       (if (eq system-type 'windows-nt)
+                           "Scripts/python.exe"
+                         "bin/python")
+                       venv-path)))
+    (if (file-exists-p python-path)
+        (progn
+          ;; Set Python interpreter path
+          (setq python-shell-interpreter python-path)
+
+          ;; Update exec-path to include the venv's bin directory
+          (let ((venv-bin-dir (file-name-directory python-path)))
+            (setq exec-path (cons venv-bin-dir
+                                  (remove venv-bin-dir exec-path))))
+
+          ;; Update PATH environment variable
+          (setenv "PATH" (concat (file-name-directory python-path)
+                                 path-separator
+                                 (getenv "PATH")))
+
+          ;; Update VIRTUAL_ENV environment variable
+          (setenv "VIRTUAL_ENV" venv-path)
+
+          ;; Remove PYTHONHOME if it exists
+          (setenv "PYTHONHOME" nil)
+
+          (message "Activated UV Python environment at %s" venv-path))
+      (error "No UV Python environment found in %s" project-root))))
+
+(load! "~/repos/github/my-emacs-utils/helm-chart-mode/helm-chart-mode.el")
+
+;; activate snippets for go when running treesitter
+(after! yasnippet
+  (add-to-list 'yas-extra-modes 'go-mode))
+
+(after! dockerfile-mode
+  (set-formatter! 'dockerfile-mode nil))
