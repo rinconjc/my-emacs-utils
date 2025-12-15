@@ -158,7 +158,7 @@
 
 (map! :leader
       :desc "Async shell command"
-      "e a" #'eshell-command)
+      "e a" #'my-commands.eshell-command-async)
 
 ;; (eshell/alias amr "atlas micros resource $*")
 
@@ -223,13 +223,13 @@ Looks for .venv directory in project root and activates the Python interpreter."
 ;;
 (require 'hyperbole)
 (defib makefile-target ()
-       "Execute make target when point is on a Makefile target definition."
-       (when (and (derived-mode-p 'makefile-mode 'makefile-gmake-mode)
-                  (save-excursion
-                    (beginning-of-line)
-                    (looking-at "^\\([a-zA-Z0-9_.-]+\\):")))
-         (let ((target (match-string 1)))
-           (ibut:label-set target (match-beginning 1) (match-end 1))
-           (hact 'compile (format "make -f %s %s"
-                                  (buffer-file-name)
-                                  target)))))
+  "Execute make target when point is on a Makefile target definition."
+  (when (and (derived-mode-p 'makefile-mode 'makefile-gmake-mode)
+             (save-excursion
+               (beginning-of-line)
+               (looking-at "^\\([a-zA-Z0-9_.-]+\\):")))
+    (let ((target (match-string 1)))
+      (ibut:label-set target (match-beginning 1) (match-end 1))
+      (hact 'compile (format "make -f %s %s"
+                             (buffer-file-name)
+                             target)))))

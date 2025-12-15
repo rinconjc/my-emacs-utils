@@ -48,15 +48,20 @@
     (when (not (get-buffer-process b))
       (kill-buffer b))))
 
-;; (defun my-commands.eshell-command-async (command)
-;;   "Run a shell COMMAND asynchronously using `start-process`."
-;;   (interactive (list (read-shell-command "Async Eshell command: ")))
-;;   (let ((buffer (generate-new-buffer (concat "*Async Eshell: " command "*"))))
-;;     (eshell-command command buffer command)
-;;     ;; (display-buffer buffer '((display-buffer-pop-up-window)))
-;;     (with-current-buffer buffer
-;;       (goto-char (point-min)))
-;;     (display-buffer buffer)))
+(defun my-commands.eshell-command-async (command)
+  "Run a shell COMMAND asynchronously using `start-process`."
+  (interactive (list (read-shell-command "Async Eshell command: ")))
+  (let* ((buffer (generate-new-buffer (concat "*Async Eshell: " command "*")))
+         (proc (start-process-shell-command command buffer command)))
+    (with-current-buffer buffer
+      ;; Apply ANSI color codes as text is inserted
+      (add-hook 'after-change-functions
+                (lambda (beg end len)
+                  (ansi-color-apply-on-region beg end))
+                nil t)
+      (goto-char (point-min)))
+    (display-buffer buffer)))
+
 
 (defun my-commands.open-typescript-repl ()
   (interactive)
