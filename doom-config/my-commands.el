@@ -48,20 +48,44 @@
     (when (not (get-buffer-process b))
       (kill-buffer b))))
 
+
 (defun my-commands.eshell-command-async (command)
-  "Run a shell COMMAND asynchronously using `start-process`."
-  (interactive (list (read-shell-command "Async Eshell command: ")))
-  (let* ((buffer (generate-new-buffer (concat "*Async Eshell: " command "*")))
-         (proc (start-process-shell-command command buffer command)))
+  "Run a shell COMMAND asynchronously using `start-process`.
+If a region is active, use the selected text as the command.
+Otherwise, prompt for a command to run."
+  (interactive (list (if (use-region-p)
+                         (buffer-substring-no-properties (region-beginning) (region-end))
+                       (read-shell-command "Command: "))))
+  (let* ((buf-name "*async eshell*")
+         (cur-buffer (get-buffer buf-name))
+         (buffer (if (and cur-buffer (not (get-buffer-process cur-buffer)))
+                     cur-buffer
+                   (generate-new-buffer buf-name))))
     (with-current-buffer buffer
-      ;; Apply ANSI color codes as text is inserted
+      (goto-char (point-max))
+      (insert (format "============= CMD: [%s] ===========\n" command))
       (add-hook 'after-change-functions 
                 (lambda (beg end len)
                   (ansi-color-apply-on-region beg end))
-                nil t)
-      (goto-char (point-min)))
+                nil t))
+    
+    (start-process-shell-command command buffer command)
+    
     (display-buffer buffer)))
 
+(defun my-commands.send-command-to-eshell-terminal (command)
+  "Run a shell COMMAND in an Eshell session (terminal).
+Reuses an existing Eshell buffer or creates a new one if it doesn't exist."
+  (interactive (list (read-shell-command "Eshell command: ")))
+  ;; Ensure an Eshell buffer exists and is the current buffer.
+  ;; 'eshell' command will switch to an existing one or create a new one.
+  (let ((buffer (or (get-buffer "*eshell*")
+                    (eshell))))
+    (with-current-buffer buffer
+      (goto-char (point-max))
+      (insert command)
+      (eshell-send-input))
+    (display-buffer buffer)))
 
 (defun my-commands.open-typescript-repl ()
   (interactive)

@@ -159,7 +159,15 @@
 
 (map! :leader
       :desc "Async shell command"
-      "e a" #'my-commands.eshell-command-async)
+      "e a" #'my-commands.eshell-command-async
+      "e t" #'my-commands.send-command-to-eshell-terminal)
+
+(set-popup-rule! "^\\*\\(async \\)?eshell\\*"
+  :side 'bottom
+  :size 0.3
+  :select t
+  :quit nil
+  :ttl 0)
 
 (defun uv-activate ()
   "Activate Python environment managed by uv based on current project directory.
