@@ -148,7 +148,7 @@
 
 (use-package! gptel
   :config
-  (setq! gptel-model 'gpt-4o
+  (setq! gptel-model 'gpt-5
          gptel-backend (gptel-make-gh-copilot "Copilot")))
 
 (require 'hyperbole
