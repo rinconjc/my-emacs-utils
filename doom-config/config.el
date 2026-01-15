@@ -165,7 +165,7 @@
 (set-popup-rule! "^\\*\\(async \\)?eshell\\*"
   :side 'bottom
   :size 0.3
-  :select t
+  :select nil
   :quit nil
   :ttl 0)
 
