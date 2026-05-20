@@ -49,34 +49,48 @@
       (kill-buffer b))))
 
 
-(defun my-commands.eshell-command-async (command)
+(defun my-commands.shell-command-async (command)
   "Run a shell COMMAND asynchronously using `start-process`.
 If a region is active, use the selected text as the command.
 Otherwise, prompt for a command to run."
   (interactive (list (if (use-region-p)
                          (buffer-substring-no-properties (region-beginning) (region-end))
                        (read-shell-command "Command: "))))
-  (let* ((buf-name "*async eshell*")
+  (let* ((buf-name "*async shell*")
          (cur-buffer (get-buffer buf-name))
          (buffer (if (and cur-buffer (not (get-buffer-process cur-buffer)))
                      cur-buffer
                    (generate-new-buffer buf-name))))
     (with-current-buffer buffer
       (goto-char (point-max))
-      (insert (format "============= CMD: [%s] ===========\n" command))
+      (insert (format "\n$> %s \n" command))
       (add-hook 'after-change-functions 
                 (lambda (beg end len)
                   (ansi-color-apply-on-region beg end))
                 nil t))
     
     (start-process-shell-command command buffer command)
-    
+    (display-buffer buffer)))
+
+(defun my-commands.send-command-to-vterm (command)
+  "Sends the shell COMMAND to the vterm terminal/buffer"
+  (interactive (list (if (use-region-p)
+                         (buffer-substring-no-properties (region-beginning) (region-end))
+                       (read-shell-command "Command: "))))
+  ;; Ensure an Eshell buffer exists and is the current buffer.
+  ;; 'eshell' command will switch to an existing one or create a new one.
+  (let ((buffer (or (get-buffer "*vterm*")
+                    (vterm))))
+    (with-current-buffer buffer
+      (vterm-send-string (concat command "\n")))
     (display-buffer buffer)))
 
 (defun my-commands.send-command-to-eshell-terminal (command)
   "Run a shell COMMAND in an Eshell session (terminal).
 Reuses an existing Eshell buffer or creates a new one if it doesn't exist."
-  (interactive (list (read-shell-command "Eshell command: ")))
+  (interactive (list (if (use-region-p)
+                         (buffer-substring-no-properties (region-beginning) (region-end))
+                       (read-shell-command "Command: "))))
   ;; Ensure an Eshell buffer exists and is the current buffer.
   ;; 'eshell' command will switch to an existing one or create a new one.
   (let ((buffer (or (get-buffer "*eshell*")

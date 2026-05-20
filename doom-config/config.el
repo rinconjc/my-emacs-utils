@@ -158,9 +158,10 @@
 (load! "my-commands.el")
 
 (map! :leader
-      :desc "Async shell command"
-      "e a" #'my-commands.eshell-command-async
-      "e t" #'my-commands.send-command-to-eshell-terminal)
+      :desc "Send shell commands"
+      "e a" #'my-commands.shell-command-async
+      "e t" #'my-commands.send-command-to-eshell-terminal
+      "e v" #'my-commands.send-command-to-vterm)
 
 (set-popup-rule! "^\\*\\(async \\)?eshell\\*"
   :side 'bottom
