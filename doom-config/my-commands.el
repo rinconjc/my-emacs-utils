@@ -50,7 +50,7 @@
 
 
 (defun my-commands.shell-command-async (command)
-  "Run a shell COMMAND asynchronously using `start-process`.
+  "Run a shell COMMAND asynchronously in a comint buffer.
 If a region is active, use the selected text as the command.
 Otherwise, prompt for a command to run."
   (interactive (list (if (use-region-p)
@@ -59,24 +59,15 @@ Otherwise, prompt for a command to run."
   (let* ((buf-name "*async shell*")
          (cur-buffer (get-buffer buf-name))
          (buffer (if (and cur-buffer (not (get-buffer-process cur-buffer)))
-                     cur-buffer
-                   (generate-new-buffer buf-name))))
+                      cur-buffer
+                    (generate-new-buffer buf-name))))
     (with-current-buffer buffer
+      (comint-mode)
       (goto-char (point-max))
-      (insert (format "\n$> %s \n" command)))
-    (let ((process (start-process-shell-command command buffer command)))
-      (set-process-filter
-       process
-       (lambda (proc string)
-         (when (buffer-live-p (process-buffer proc))
-           (with-current-buffer (process-buffer proc)
-             (while (string-match ".\C-h" string)
-               (setq string (replace-match "" nil t string)))
-             (goto-char (point-max))
-             (insert string)
-             (ansi-color-apply-on-region (process-mark proc) (point-max))
-             (set-marker (process-mark proc) (point))))))
-      (display-buffer buffer))))
+      (insert (format "\n$> %s \n" command))
+      (comint-exec buffer "async-shell" shell-file-name nil
+                   (list shell-command-switch command)))
+    (display-buffer buffer)))
 
 (defun my-commands.send-command-to-vterm (command)
   "Sends the shell COMMAND to the vterm terminal/buffer"
